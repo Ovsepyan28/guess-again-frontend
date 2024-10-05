@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import './globals.css';
-import { Roboto } from 'next/font/google';
+
 import { ThemeProvider } from '@mui/material/styles';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
+
 import theme from '../theme';
 
 const roboto = Roboto({
@@ -11,6 +13,7 @@ const roboto = Roboto({
   display: 'swap',
   variable: '--font-roboto',
 });
+
 export const metadata: Metadata = {
   title: 'GuessAgain',
   description: 'Created by Ovsepyan',
