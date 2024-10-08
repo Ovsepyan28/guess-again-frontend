@@ -9,17 +9,29 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
+
+import { Routes } from '@/types/routes';
 
 export const Header: FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout', {});
+      router.push(Routes['ROOT']);
+    } catch (error) {
+      console.error('Ошибка выхода:', error);
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             size='large'
             edge='start'
             color='inherit'
@@ -27,9 +39,13 @@ export const Header: FC = () => {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-            <Link href='/' sx={{ color: 'white', display: 'inline-block' }}>
+            <Link
+              href='/'
+              sx={{ color: 'white', display: 'inline-block' }}
+              underline='none'
+            >
               <Typography
                 variant='h5'
                 component='div'
@@ -39,11 +55,12 @@ export const Header: FC = () => {
               </Typography>
             </Link>
           </Box>
-          {pathname !== '/login' && (
-            <Button color='inherit' onClick={() => router.push('/login')}>
-              Вход
-            </Button>
-          )}
+          {pathname !== Routes['LOGIN'] &&
+            pathname !== Routes['REGISTRATION'] && (
+              <Button color='inherit' onClick={handleLogout} variant='outlined'>
+                Выход
+              </Button>
+            )}
         </Toolbar>
       </AppBar>
     </Box>

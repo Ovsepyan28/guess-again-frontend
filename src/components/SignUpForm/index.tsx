@@ -14,35 +14,45 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import { LoginData, LoginErrorType, LoginResponse } from '@/types/login';
+import { LoginErrorType, LoginResponse } from '@/types/login';
 import { Routes } from '@/types/routes';
+import { SignUpData } from '@/types/signUp';
 import { User } from '@/types/user';
 
-export const LoginForm = () => {
+export const SignUpForm = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isShow, setIsShow] = useState<boolean>(false);
-  const [email, setEmail] = useState<LoginData['email']>('');
-  const [password, setPassword] = useState<LoginData['password']>('');
+  const [email, setEmail] = useState<SignUpData['email']>('');
+  const [userName, setUserName] = useState<SignUpData['userName']>('');
+  const [password, setPassword] = useState<SignUpData['password']>('');
+  const [confirmPassword, setConfirmPassword] =
+    useState<SignUpData['password']>('');
   const [errors, setErrors] = useState<LoginErrorType>('');
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
 
-  const loginData: LoginData = { email, password };
+  const signUpData: SignUpData = { email, password, userName };
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setErrors('Пароли не совпадают');
+      setIsShow(true);
+      return;
+    }
 
     try {
       const response = await axios.post<LoginResponse>(
-        '/api/auth/login',
-        loginData
+        '/api/auth/signup',
+        signUpData
       );
 
       const user: User = response.data;
 
-      if (response.status === 200) {
-        setSuccess(`Привет, ${user.userName}! Вы успешно вошли в систему!`);
+      if (response.status === 201) {
+        setSuccess(`Привет, ${user.userName}! Вы успешно зарегистрировались!`);
         setIsSuccess(true);
         setErrors('');
         setIsShow(true);
@@ -88,6 +98,10 @@ export const LoginForm = () => {
     return null;
   };
 
+  const isSignUpButtonEnabled = () => {
+    return password === confirmPassword;
+  };
+
   return (
     <Container maxWidth='xs'>
       <Box
@@ -105,10 +119,10 @@ export const LoginForm = () => {
         )}
         {!isSuccess && (
           <>
-            <Typography variant='h5'>Вход</Typography>
+            <Typography variant='h5'>Регистрация</Typography>
             <Collapse in={isShow}>{errors && renderErrors(errors)}</Collapse>
             <form
-              onSubmit={handleLogin}
+              onSubmit={handleSignUp}
               style={{ width: '100%', marginTop: '16px' }}
             >
               <TextField
@@ -130,31 +144,66 @@ export const LoginForm = () => {
                 margin='normal'
                 required
                 fullWidth
+                label='Имя'
+                helperText={
+                  userName.length < 2 ? 'Минимальная длина имени 2 символа' : ''
+                }
+                value={userName}
+                onChange={(e) => {
+                  setIsShow(false);
+                  setUserName(e.target.value.trim());
+                }}
+              />
+              <TextField
+                size='small'
+                variant='outlined'
+                margin='normal'
+                required
+                fullWidth
                 label='Пароль'
-                type='password'
-                value={password}
                 helperText={
                   password.length < 6 || password.length > 16
                     ? 'Длина пароля от 6 до 16 символов'
                     : ''
                 }
+                type='password'
+                value={password}
                 onChange={(e) => {
                   setIsShow(false);
                   setPassword(e.target.value.trim());
                 }}
               />
+              <TextField
+                size='small'
+                variant='outlined'
+                margin='normal'
+                required
+                error={!isSignUpButtonEnabled()}
+                helperText={
+                  isSignUpButtonEnabled() ? '' : 'Введенные пароли не совпадают'
+                }
+                fullWidth
+                label='Повторите пароль'
+                type='password'
+                value={confirmPassword}
+                onChange={(e) => {
+                  setIsShow(false);
+                  setConfirmPassword(e.target.value.trim());
+                }}
+              />
               <Button
                 type='submit'
                 variant='contained'
+                disabled={!isSignUpButtonEnabled()}
                 color='primary'
                 fullWidth
                 sx={{ mt: 2 }}
               >
-                Войти
+                Зарегистрироваться
               </Button>
             </form>
-            <Link href={Routes['REGISTRATION']} sx={{ mt: 1 }} underline='none'>
-              <Typography>Регистрация</Typography>
+            <Link href={Routes['LOGIN']} sx={{ mt: 1 }} underline='none'>
+              <Typography>Вход</Typography>
             </Link>
           </>
         )}
