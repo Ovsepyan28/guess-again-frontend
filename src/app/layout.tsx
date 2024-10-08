@@ -5,6 +5,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
+import { BaseLayout } from '@/components/BaseLayout';
 import theme from '../theme';
 
 const roboto = Roboto({
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang='en'>
       <body suppressHydrationWarning={true} className={roboto.className}>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <BaseLayout>{children}</BaseLayout>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
