@@ -21,7 +21,7 @@ export const Header: FC = () => {
   const handleLogout = async () => {
     try {
       await axios.post('/api/auth/logout', {});
-      router.push(Routes['ROOT']);
+      router.push(Routes['LOGIN']);
     } catch (error) {
       console.error('Ошибка выхода:', error);
     }
@@ -31,7 +31,7 @@ export const Header: FC = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          {/* <IconButton
+          <IconButton
             size='large'
             edge='start'
             color='inherit'
@@ -39,7 +39,7 @@ export const Header: FC = () => {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton> */}
+          </IconButton>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
             <Link
               href='/'

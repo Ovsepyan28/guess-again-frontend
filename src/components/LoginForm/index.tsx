@@ -14,9 +14,11 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import { LoginData, LoginErrorType, LoginResponse } from '@/types/login';
+import { useAuth } from '@/providers/AuthProvider';
+import { LoginData, LoginErrorType } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { User } from '@/types/user';
+import { SOMETHING_WENT_WRONG } from '../constants';
 
 export const LoginForm = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -27,37 +29,32 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
-
+  const auth = useAuth();
   const loginData: LoginData = { email, password };
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post<LoginResponse>(
-        '/api/auth/login',
-        loginData
-      );
+      await auth.login(loginData);
 
-      const user: User = response.data;
+      const user: User | null = auth.user;
 
-      if (response.status === 200) {
-        setSuccess(`Привет, ${user.userName}! Вы успешно вошли в систему!`);
-        setIsSuccess(true);
-        setErrors('');
-        setIsShow(true);
-      }
+      setSuccess(`Привет, ${user?.userName}! Вы успешно вошли в систему!`);
+      setIsSuccess(true);
+      setErrors('');
+      setIsShow(true);
 
       setTimeout(() => router.push(Routes['ROOT']), 1000);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 500) {
-          setErrors('Произошла неизвестная ошибка');
+          setErrors(SOMETHING_WENT_WRONG);
         } else {
           setErrors(error.response?.data?.message);
         }
       } else {
-        setErrors('Произошла неизвестная ошибка');
+        setErrors(SOMETHING_WENT_WRONG);
       }
       setSuccess('');
       setIsShow(true);
@@ -87,7 +84,6 @@ export const LoginForm = () => {
 
     return null;
   };
-
   return (
     <Container maxWidth='xs'>
       <Box

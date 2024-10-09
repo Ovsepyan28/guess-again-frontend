@@ -14,10 +14,12 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import { LoginErrorType, LoginResponse } from '@/types/login';
+import { useAuth } from '@/providers/AuthProvider';
+import { LoginErrorType } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { SignUpData } from '@/types/signUp';
 import { User } from '@/types/user';
+import { PASSWORDS_DO_NOT_MATCH, SOMETHING_WENT_WRONG } from '../constants';
 
 export const SignUpForm = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -31,43 +33,38 @@ export const SignUpForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
-
+  const auth = useAuth();
   const signUpData: SignUpData = { email, password, userName };
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrors('Пароли не совпадают');
+      setErrors(PASSWORDS_DO_NOT_MATCH);
       setIsShow(true);
       return;
     }
 
     try {
-      const response = await axios.post<LoginResponse>(
-        '/api/auth/signup',
-        signUpData
-      );
+      await auth.signUp(signUpData);
 
-      const user: User = response.data;
-
-      if (response.status === 201) {
-        setSuccess(`Привет, ${user.userName}! Вы успешно зарегистрировались!`);
-        setIsSuccess(true);
-        setErrors('');
-        setIsShow(true);
-      }
+      const user: User | null = auth.user;
+      
+      setSuccess(`Привет, ${user?.userName}! Вы успешно зарегистрировались!`);
+      setIsSuccess(true);
+      setErrors('');
+      setIsShow(true);
 
       setTimeout(() => router.push(Routes['ROOT']), 1000);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 500) {
-          setErrors('Произошла неизвестная ошибка');
+          setErrors(SOMETHING_WENT_WRONG);
         } else {
           setErrors(error.response?.data?.message);
         }
       } else {
-        setErrors('Произошла неизвестная ошибка');
+        setErrors(SOMETHING_WENT_WRONG);
       }
       setSuccess('');
       setIsShow(true);
