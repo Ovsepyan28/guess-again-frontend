@@ -1,7 +1,7 @@
 export enum Routes {
   LOGIN = '/login',
-  REGISTRATION = '/signup',
+  SIGNUP = '/signup',
   ROOT = '/',
 }
 
-export const publicRoutes = [Routes['LOGIN'], Routes['REGISTRATION']];
+export const publicRoutes = [Routes['LOGIN'], Routes['SIGNUP']];

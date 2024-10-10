@@ -55,12 +55,12 @@ export const Header: FC = () => {
               </Typography>
             </Link>
           </Box>
-          {pathname !== Routes['LOGIN'] &&
+          {/* {pathname !== Routes['LOGIN'] &&
             pathname !== Routes['REGISTRATION'] && (
               <Button color='inherit' onClick={handleLogout} variant='outlined'>
                 Выход
               </Button>
-            )}
+            )} */}
         </Toolbar>
       </AppBar>
     </Box>

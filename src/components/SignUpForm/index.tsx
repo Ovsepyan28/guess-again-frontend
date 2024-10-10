@@ -14,8 +14,7 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import { useAuth } from '@/providers/AuthProvider';
-import { LoginErrorType } from '@/types/login';
+import { LoginErrorType, LoginResponse } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { SignUpData } from '@/types/signUp';
 import { User } from '@/types/user';
@@ -33,7 +32,6 @@ export const SignUpForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
-  const auth = useAuth();
   const signUpData: SignUpData = { email, password, userName };
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
@@ -46,14 +44,19 @@ export const SignUpForm = () => {
     }
 
     try {
-      await auth.signUp(signUpData);
+      const response = await axios.post<LoginResponse>(
+        '/api/auth/signup',
+        signUpData
+      );
 
-      const user: User | null = auth.user;
-      
-      setSuccess(`Привет, ${user?.userName}! Вы успешно зарегистрировались!`);
-      setIsSuccess(true);
-      setErrors('');
-      setIsShow(true);
+      const user: User = response.data;
+
+      if (response.status === 201) {
+        setSuccess(`Привет, ${user.userName}! Вы успешно зарегистрировались!`);
+        setIsSuccess(true);
+        setErrors('');
+        setIsShow(true);
+      }
 
       setTimeout(() => router.push(Routes['ROOT']), 1000);
     } catch (error) {

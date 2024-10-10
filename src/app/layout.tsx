@@ -6,7 +6,6 @@ import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
 import { BaseLayout } from '@/components/BaseLayout';
-import { AuthProvider } from '@/providers/AuthProvider';
 import theme from '../theme';
 
 const roboto = Roboto({
@@ -30,11 +29,9 @@ export default function RootLayout({
     <html lang='en'>
       <body suppressHydrationWarning={true} className={roboto.className}>
         <AppRouterCacheProvider>
-          <AuthProvider>
             <ThemeProvider theme={theme}>
               <BaseLayout>{children}</BaseLayout>
             </ThemeProvider>
-          </AuthProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

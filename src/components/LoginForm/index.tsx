@@ -14,8 +14,7 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-import { useAuth } from '@/providers/AuthProvider';
-import { LoginData, LoginErrorType } from '@/types/login';
+import { LoginData, LoginErrorType, LoginResponse } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { User } from '@/types/user';
 import { SOMETHING_WENT_WRONG } from '../constants';
@@ -29,21 +28,25 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
-  const auth = useAuth();
   const loginData: LoginData = { email, password };
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      await auth.login(loginData);
+      const response = await axios.post<LoginResponse>(
+        '/api/auth/login',
+        loginData
+      );
 
-      const user: User | null = auth.user;
+      const user: User = response.data;
 
-      setSuccess(`Привет, ${user?.userName}! Вы успешно вошли в систему!`);
-      setIsSuccess(true);
-      setErrors('');
-      setIsShow(true);
+      if (response.status === 200) {
+        setSuccess(`Привет, ${user.userName}! Вы успешно вошли в систему!`);
+        setIsSuccess(true);
+        setErrors('');
+        setIsShow(true);
+      }
 
       setTimeout(() => router.push(Routes['ROOT']), 1000);
     } catch (error) {
@@ -149,7 +152,7 @@ export const LoginForm = () => {
                 Войти
               </Button>
             </form>
-            <Link href={Routes['REGISTRATION']} sx={{ mt: 1 }} underline='none'>
+            <Link href={Routes['SIGNUP']} sx={{ mt: 1 }} underline='none'>
               <Typography>Регистрация</Typography>
             </Link>
           </>
