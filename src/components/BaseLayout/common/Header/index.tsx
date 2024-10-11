@@ -1,49 +1,94 @@
 'use client';
 
-import { FC } from 'react';
+import React, { FC } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from '@mui/material';
+import { Button, Link, Menu, MenuItem } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
+import { clearUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Routes } from '@/types/routes';
 
 export const Header: FC = () => {
+  const user = useAppSelector((state) => state.user.user);
   const router = useRouter();
-  const pathname = usePathname();
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     try {
       await axios.post('/api/auth/logout', {});
+
+      dispatch(clearUser());
+
       router.push(Routes['LOGIN']);
     } catch (error) {
       console.error('Ошибка выхода:', error);
     }
   };
 
+  const [anchorMenuButton, setAnchorMenuButton] =
+    React.useState<null | HTMLElement>(null);
+
+  const isOpenMenu = Boolean(anchorMenuButton);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorMenuButton(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorMenuButton(null);
+  };
+
+  const handleMenuItem = () => {
+    handleLogout();
+    setAnchorMenuButton(null);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton
-            size='large'
-            edge='start'
-            color='inherit'
-            aria-label='menu'
-            sx={{ mr: 2 }}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              color='inherit'
+              startIcon={<MenuIcon />}
+              sx={{ position: 'absolute', left: 0, ml: 1 }}
+              id='menu-button'
+              onClick={handleClick}
+              disabled={!user}
+            >
+              <Typography
+                variant='button'
+                component='div'
+                sx={{ textAlign: 'center' }}
+              >
+                {user?.userName}
+              </Typography>
+            </Button>
+            <Menu
+              open={isOpenMenu}
+              anchorEl={anchorMenuButton}
+              onClose={handleClose}
+              MenuListProps={{ disablePadding: true }}
+            >
+              <MenuItem onClick={handleMenuItem}>Выход</MenuItem>
+            </Menu>
+
             <Link
               href='/'
-              sx={{ color: 'white', display: 'inline-block' }}
+              sx={{ color: 'white', display: 'inline-block', mb: 0.5 }}
               underline='none'
             >
               <Typography
@@ -55,12 +100,6 @@ export const Header: FC = () => {
               </Typography>
             </Link>
           </Box>
-          {/* {pathname !== Routes['LOGIN'] &&
-            pathname !== Routes['REGISTRATION'] && (
-              <Button color='inherit' onClick={handleLogout} variant='outlined'>
-                Выход
-              </Button>
-            )} */}
         </Toolbar>
       </AppBar>
     </Box>

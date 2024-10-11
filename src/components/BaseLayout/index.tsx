@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { Box } from '@mui/material';
 
-import { Header } from './common/Header';
+import StoreProvider from '@/providers/StoreProvider';
 
+import { Header } from './common/Header';
 
 export type BaseLayoutProps = {
   children: React.ReactNode;
@@ -11,8 +12,10 @@ export type BaseLayoutProps = {
 export const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
   return (
     <Box>
-      <Header />
-      {children}
+      <StoreProvider>
+        <Header />
+        {children}
+      </StoreProvider>
     </Box>
   );
 };

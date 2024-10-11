@@ -14,6 +14,8 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+import { setUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch } from '@/redux/hooks';
 import { LoginData, LoginErrorType, LoginResponse } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { User } from '@/types/user';
@@ -28,6 +30,7 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const loginData: LoginData = { email, password };
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -48,7 +51,9 @@ export const LoginForm = () => {
         setIsShow(true);
       }
 
-      setTimeout(() => router.push(Routes['ROOT']), 1000);
+      dispatch(setUser(user));
+
+      setTimeout(() => router.push(Routes['ROOT']), 500);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 500) {
@@ -120,7 +125,7 @@ export const LoginForm = () => {
                 value={email}
                 onChange={(e) => {
                   setIsShow(false);
-                  setEmail(e.target.value.trim());
+                  setEmail(e.target.value.trim().toLowerCase());
                 }}
               />
               <TextField
@@ -132,11 +137,6 @@ export const LoginForm = () => {
                 label='Пароль'
                 type='password'
                 value={password}
-                helperText={
-                  password.length < 6 || password.length > 16
-                    ? 'Длина пароля от 6 до 16 символов'
-                    : ''
-                }
                 onChange={(e) => {
                   setIsShow(false);
                   setPassword(e.target.value.trim());

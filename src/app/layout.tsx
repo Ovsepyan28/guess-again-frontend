@@ -29,9 +29,9 @@ export default function RootLayout({
     <html lang='en'>
       <body suppressHydrationWarning={true} className={roboto.className}>
         <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <BaseLayout>{children}</BaseLayout>
-            </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <BaseLayout>{children}</BaseLayout>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

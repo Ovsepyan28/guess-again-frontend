@@ -14,6 +14,8 @@ import {
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+import { setUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch } from '@/redux/hooks';
 import { LoginErrorType, LoginResponse } from '@/types/login';
 import { Routes } from '@/types/routes';
 import { SignUpData } from '@/types/signUp';
@@ -32,6 +34,7 @@ export const SignUpForm = () => {
   const [success, setSuccess] = useState<string>('');
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const signUpData: SignUpData = { email, password, userName };
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
@@ -58,7 +61,8 @@ export const SignUpForm = () => {
         setIsShow(true);
       }
 
-      setTimeout(() => router.push(Routes['ROOT']), 1000);
+      dispatch(setUser(user));
+      setTimeout(() => router.push(Routes['ROOT']), 500);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 500) {
