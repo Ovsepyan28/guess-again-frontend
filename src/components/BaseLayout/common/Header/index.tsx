@@ -61,22 +61,24 @@ export const Header: FC = () => {
               justifyContent: 'center',
             }}
           >
-            <Button
-              color='inherit'
-              startIcon={<MenuIcon />}
-              sx={{ position: 'absolute', left: 0, ml: 1 }}
-              id='menu-button'
-              onClick={handleClick}
-              disabled={!user}
-            >
-              <Typography
-                variant='button'
-                component='div'
-                sx={{ textAlign: 'center' }}
+            {user && (
+              <Button
+                color='inherit'
+                startIcon={<MenuIcon />}
+                sx={{ position: 'absolute', left: 0, ml: 1 }}
+                id='menu-button'
+                onClick={handleClick}
+                disabled={!user}
               >
-                {user?.userName}
-              </Typography>
-            </Button>
+                <Typography
+                  variant='button'
+                  component='div'
+                  sx={{ textAlign: 'center' }}
+                >
+                  {user.userName}
+                </Typography>
+              </Button>
+            )}
             <Menu
               open={isOpenMenu}
               anchorEl={anchorMenuButton}
