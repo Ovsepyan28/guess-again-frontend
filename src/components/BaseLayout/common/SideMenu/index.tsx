@@ -11,7 +11,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { useRouter } from 'next/navigation';
 
+import { Routes } from '@/types/routes';
 import { User } from '@/types/user';
 
 interface SideMenuProps {
@@ -20,6 +22,11 @@ interface SideMenuProps {
 }
 export const SideMenu: FC<SideMenuProps> = ({ user, logout }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(Routes['TOP10']);
+  };
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -59,7 +66,7 @@ export const SideMenu: FC<SideMenuProps> = ({ user, logout }) => {
           </ListItem>
         )}
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={handleClick}>
             <ListItemIcon>
               <EmojiEventsIcon />
             </ListItemIcon>

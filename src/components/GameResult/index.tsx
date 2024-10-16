@@ -30,7 +30,7 @@ export const GameResult: FC<GameResultProps> = ({ game }) => {
     router.push(gameRoute);
   };
 
-  const handleClickMain = async () => {
+  const handleClickMain = () => {
     router.push(Routes['ROOT']);
   };
 

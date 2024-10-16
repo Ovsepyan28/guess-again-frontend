@@ -36,7 +36,7 @@ const GamePage: FC<GamePageProps> = ({ params }) => {
 
   if (!game) {
     return (
-      <Container maxWidth={'sm'} sx={{ mt: 2, textAlign: 'center' }}>
+      <Container maxWidth={'xs'} sx={{ mt: 2, textAlign: 'center' }}>
         <CircularProgress />
       </Container>
     );
