@@ -39,7 +39,10 @@ export const LoginForm = () => {
     try {
       const response = await axios.post<LoginResponse>(
         '/api/auth/login',
-        loginData
+        loginData,
+        {
+          withCredentials: true,
+        }
       );
 
       const user: User = response.data;

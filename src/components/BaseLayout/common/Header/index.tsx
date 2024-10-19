@@ -21,7 +21,9 @@ export const Header: FC = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/auth/logout', {});
+      await axios.post('/api/auth/logout', {
+        withCredentials: true,
+      });
 
       dispatch(clearUser());
 
@@ -35,7 +37,7 @@ export const Header: FC = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          <SideMenu user={user} logout={handleLogout} />             
+          <SideMenu user={user} logout={handleLogout} />
           <Link
             href='/'
             sx={{

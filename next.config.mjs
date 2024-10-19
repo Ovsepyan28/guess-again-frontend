@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:slug*',
-        destination: 'http://localhost:5555/api/:slug*',
+        destination: 'http://194.226.49.191:5555/api/:slug*',
       },
     ];
   },

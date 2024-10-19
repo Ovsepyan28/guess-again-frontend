@@ -43,7 +43,10 @@ export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
 
     const response = await axios.post<SubmitAnswerResponse>(
       '/api/games/answer',
-      submitAnswerData
+      submitAnswerData,
+      {
+        withCredentials: true,
+      }
     );
 
     setCorrectAnswer(response.data.correctAnswerId);
@@ -81,7 +84,7 @@ export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
   };
 
   return (
-    <Container maxWidth={'sm'} sx={{ mt: 2 ,mb:2}}>
+    <Container maxWidth={'sm'} sx={{ mt: 2, mb: 2 }}>
       <Card>
         <CardHeader
           title={

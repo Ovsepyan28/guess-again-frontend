@@ -5,6 +5,7 @@ import {
   Card,
   CircularProgress,
   Container,
+  Divider,
   List,
   ListItem,
   ListSubheader,
@@ -20,23 +21,28 @@ export const Top10: FC = () => {
   const listItems = () =>
     top?.map((user) => {
       return (
-        <ListItem
-          disablePadding
-          key={user.userName}
-          component='div'
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Typography variant='body1'>{user.userName}</Typography>
-          <Typography variant='body1'>
-            <strong>{user.maxScore}</strong> балов
-          </Typography>
-        </ListItem>
+        <>
+          <ListItem
+            disablePadding
+            key={user.userName}
+            component='div'
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Typography variant='body1'>{user.userName}</Typography>
+            <Typography variant='body1'>
+              <strong>{user.maxScore}</strong> балов
+            </Typography>
+          </ListItem>
+          <Divider />
+        </>
       );
     });
 
   const fetchTop10 = async () => {
     try {
-      const response = await axios.get<TopPlayer[]>('/api/users/top10');
+      const response = await axios.get<TopPlayer[]>('/api/users/top10', {
+        withCredentials: true,
+      });
       setTop(response.data);
     } catch (error) {
       console.error('Ошибка при загрузке данных игры:', error);

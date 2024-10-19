@@ -10,7 +10,9 @@ export const MainPage = () => {
   const router = useRouter();
 
   const handleClick = async () => {
-    const response = await axios.post<NewGameRequest>('/api/games/new', {});
+    const response = await axios.post<NewGameRequest>('/api/games/new', {
+      withCredentials: true,
+    });
 
     const gameRoute = `/game/${response.data.gameId}`;
 

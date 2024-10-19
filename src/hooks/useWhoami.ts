@@ -8,7 +8,9 @@ export const useWhoami = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/whoami');
+      const response = await axios.get('/api/auth/whoami', {
+        withCredentials: true,
+      });
 
       setUser(response.data);
     } catch (error) {

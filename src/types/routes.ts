@@ -1,7 +1,7 @@
 export enum Routes {
   LOGIN = '/login',
   SIGNUP = '/signup',
-  TOP10 = 'top10',
+  TOP10 = '/top10',
   ROOT = '/',
 }
 

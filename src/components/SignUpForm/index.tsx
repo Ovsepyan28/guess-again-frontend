@@ -49,7 +49,10 @@ export const SignUpForm = () => {
     try {
       const response = await axios.post<LoginResponse>(
         '/api/auth/signup',
-        signUpData
+        signUpData,
+        {
+          withCredentials: true,
+        }
       );
 
       const user: User = response.data;
@@ -139,7 +142,7 @@ export const SignUpForm = () => {
                 value={email}
                 onChange={(e) => {
                   setIsShow(false);
-                  setEmail(e.target.value.trim());
+                  setEmail(e.target.value.trim().toLowerCase());
                 }}
               />
               <TextField

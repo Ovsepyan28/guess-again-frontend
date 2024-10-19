@@ -23,7 +23,9 @@ export const GameResult: FC<GameResultProps> = ({ game }) => {
   const router = useRouter();
 
   const handleClickNewGame = async () => {
-    const response = await axios.post<NewGameRequest>('/api/games/new', {});
+    const response = await axios.post<NewGameRequest>('/api/games/new', {
+      withCredentials: true,
+    });
 
     const gameRoute = `/game/${response.data.gameId}`;
 

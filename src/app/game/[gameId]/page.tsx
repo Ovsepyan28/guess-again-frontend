@@ -19,7 +19,10 @@ const GamePage: FC<GamePageProps> = ({ params }) => {
     setGame(null);
     try {
       const response = await axios.get<GameQuestionState>(
-        `/api/games/${params.gameId}`
+        `/api/games/${params.gameId}`,
+        {
+          withCredentials: true,
+        }
       );
       console.log(response.data);
       setGame(response.data); // Обновляем состояние игры
