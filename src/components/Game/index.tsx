@@ -78,7 +78,7 @@ export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
       !correctAnswer && // Проверка еще не прошла
       answerId === selectedAnswer
     ) {
-      return 'warning';
+      return 'success';
     }
 
     // Ответ выбран, ответ верный
