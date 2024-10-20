@@ -4,6 +4,7 @@ import { FC, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
+  ButtonPropsColorOverrides,
   Card,
   CardHeader,
   CardMedia,
@@ -11,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { OverridableStringUnion } from '@mui/types'; // Убедитесь, что у вас импортирован нужный тип
 import axios from 'axios';
 
 import theme from '@/theme';
@@ -25,16 +27,28 @@ interface GameProps {
   fetchGameData: () => void;
 }
 
+// Варианты цвета кнопки
+type ColorOptions = OverridableStringUnion<
+  | 'warning'
+  | 'success'
+  | 'error'
+  | 'primary'
+  | 'inherit'
+  | 'secondary'
+  | 'info',
+  ButtonPropsColorOverrides
+>;
+
 export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
-  const [correctAnswer, setCorrectAnswer] = useState<string>('');
-  const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleAnswer = async (answerId: string) => {
-    if (isCorrectAnswer || isLoading) return {};
+    if (selectedAnswer || isLoading) return {};
 
     setSelectedAnswer(answerId);
+
     const submitAnswerData: SubmitAnswerData = {
       gameId: game.gameId,
       questionId: game.questionId,
@@ -50,7 +64,6 @@ export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
     );
 
     setCorrectAnswer(response.data.correctAnswerId);
-    setIsCorrectAnswer(correctAnswer === selectedAnswer);
     setTimeout(() => fetchGameData(), 1000);
   };
 
@@ -58,28 +71,43 @@ export const Game: FC<GameProps> = ({ game, fetchGameData }) => {
     setIsLoading(false);
   };
 
-  const getColor = (answerId: string) => {
+  const getColor = (answerId: string): ColorOptions => {
+    // Ответ выбран, но результат еще не получен
     if (
-      selectedAnswer &&
-      selectedAnswer === correctAnswer &&
-      answerId === correctAnswer
+      selectedAnswer && // Ответ выбран
+      !correctAnswer && // Проверка еще не прошла
+      answerId === selectedAnswer
+    ) {
+      return 'warning';
+    }
+
+    // Ответ выбран, ответ верный
+    if (
+      selectedAnswer && // Ответ выбран
+      selectedAnswer === correctAnswer && // Ответ верный
+      answerId === selectedAnswer
     ) {
       return 'success';
     }
+
+    // Ответ выбран, ответ неверный
     if (
-      selectedAnswer &&
-      selectedAnswer !== correctAnswer &&
+      selectedAnswer && // Ответ выбран
+      selectedAnswer !== correctAnswer && // Ответ неверный
       answerId === selectedAnswer
     ) {
       return 'error';
     }
+
+    // Ответ выбран, ответ неверный, подсветка верного ответа
     if (
-      selectedAnswer &&
-      selectedAnswer !== correctAnswer &&
+      selectedAnswer && // Ответ выбран
+      selectedAnswer !== correctAnswer && // Ответ неверный
       answerId === correctAnswer
     ) {
       return 'success';
     }
+
     return 'primary';
   };
 
