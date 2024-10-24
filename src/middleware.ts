@@ -5,7 +5,7 @@ import { Routes } from './types/routes';
 
 export async function middleware(request: NextRequest) {
   try {
-    const response = await fetch('http://194.226.49.191:5555/api/auth/whoami', {
+    const response = await fetch('http://localhost:5555/api/auth/whoami', {
       headers: {
         Cookie: request.headers.get('cookie') || '',
       },
